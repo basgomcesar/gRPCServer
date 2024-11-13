@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package product;
+
+service ProductService {
+  // Stream que envía actualizaciones de productos a los clientes conectados
+  rpc SubscribeToProductUpdates(ProductUpdateRequest) returns (stream ProductUpdateResponse);
+}
+
+message ProductUpdateRequest {
+  string user_id = 1;  
+}
+
+message ProductUpdateResponse {
+  string product_id = 1;             
+  string product_name = 2;             
+  string description = 3;               
+  double price = 4;                    
+  int32 quantity_available = 5;         
+  bool available = 6;                   
+  bytes photo = 7;                      
+  string user_id = 8;                   
+  string status = 9;                    
+}
