@@ -14,7 +14,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 const productProto = grpc.loadPackageDefinition(packageDefinition).product;
 
-function startGrpcServer() {
+async function startGrpcServer() {
   const server = new grpc.Server();
 
   // Añadir el servicio y asociar los métodos de gRPC con el controlador

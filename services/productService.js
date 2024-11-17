@@ -2,15 +2,13 @@ const EventEmitter = require('events');
 class ProductService extends EventEmitter {
   constructor() {
     super();
-    this.products = {}; // Puede ser reemplazado con acceso a base de datos
+    this.products = {}; 
   }
 
   updateProduct(productId, data) {
-    // Lógica para actualizar producto en base de datos o en memoria
     console.log(`Actualizando producto ${productId} con datos:`, data);
     this.products[productId] = data;
     
-    // Emitir evento de actualización de producto
     console.log('Emitiendo evento de actualización de producto');
     this.emit('productUpdated', { productId, ...data });
   }
