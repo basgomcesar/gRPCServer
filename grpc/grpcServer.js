@@ -1,10 +1,9 @@
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
-const productController = require('../productController');
+const ProductService = require('../services/productService');
 
-// Cargar el archivo proto
-const PROTO_PATH = path.join(__dirname, '../proto/productos.proto');
+// Carga el archivo .proto
+const PROTO_PATH = __dirname + '/../proto/productos.proto';
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -14,26 +13,28 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 const productProto = grpc.loadPackageDefinition(packageDefinition).product;
 
-async function startGrpcServer() {
+// Inicializar servicio de productos
+const productService = new ProductService();
+
+async function main() {
+  // Inicializa la conexión a MySQL y comienza a monitorear
+  await productService.initDbConnection();
+  productService.pollDatabaseForUpdates();
+
+  // Configurar servidor gRPC
   const server = new grpc.Server();
 
-  // Añadir el servicio y asociar los métodos de gRPC con el controlador
   server.addService(productProto.ProductService.service, {
-    subscribeToProductUpdates: productController.subscribeToProductUpdates,
+    SubscribeToProductUpdates: (call) => productService.subscribeToUpdates(call),
   });
 
-  // Escuchar en el puerto 50051
-  server.bindAsync(
-    '0.0.0.0:50051', // Cambiado a 0.0.0.0 para aceptar conexiones externas
-    grpc.ServerCredentials.createInsecure(),
-    (error, port) => {
-      if (error) {
-        console.error('Error al iniciar el servidor gRPC:', error);
-        return;
-      }
-      console.log(`gRPC server running at http://localhost:${port}`);
+  server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), (err, port) => {
+    if (err) {
+      console.error('Error al iniciar el servidor:', err);
+      return;
     }
-  );
+    console.log(`Servidor gRPC escuchando en el puerto ${port}`);
+  });
 }
 
-module.exports = startGrpcServer;
+main();
