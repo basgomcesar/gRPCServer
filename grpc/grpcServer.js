@@ -18,7 +18,6 @@ const productService = new ProductService();
 
 async function main() {
   // Inicializa la conexión a MySQL y comienza a monitorear
-  await productService.initDbConnection();
   productService.pollDatabaseForUpdates();
 
   // Configurar servidor gRPC

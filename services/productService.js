@@ -1,20 +1,11 @@
 const EventEmitter = require('events');
-const mysql = require('mysql2/promise');
+const connection  = require('../models/database');
 
 class ProductService extends EventEmitter {
   constructor() {
     super();
     this.products = {}; // Cache de productos
-    this.db = null; // Conexión a MySQL
-  }
-
-  async initDbConnection() {
-    this.db = await mysql.createPool({
-      host: 'XXX.XXX.XXX.XXX',
-      user: 'xxxxx',
-      password: 'xxxxx',
-      database: 'food_now',
-    });
+    this.db = connection; // Conexión a MySQL
   }
 
   async pollDatabaseForUpdates() {
