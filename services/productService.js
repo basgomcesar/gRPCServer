@@ -76,6 +76,7 @@ class ProductService extends EventEmitter {
         product_id: update.idProducto,
         product_name: update.nombre,
         available: update.disponible,
+        quantity_available: update.cantidadDisponible,
         description: update.descripcion,
         price: update.precio,
         photo: update.foto,
