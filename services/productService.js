@@ -10,7 +10,7 @@ class ProductService extends EventEmitter {
 
   async pollDatabaseForUpdates() {
     console.log('Iniciando monitoreo de base de datos para actualizaciones de productos...');
-    const query = `SELECT idProducto, nombre, descripcion,precio, cantidadDisponible, disponible, idUsuario,foto FROM productos WHERE disponible = 1`;
+    const query = `SELECT idProducto, nombre, descripcion,precio, cantidadDisponible, disponible, idVendedor,foto FROM productos WHERE disponible = 1`;
 
     let lastSnapshot = new Map(); // Para comparar cambios en la base de datos
 
@@ -50,7 +50,7 @@ class ProductService extends EventEmitter {
   async subscribeToUpdates(call) {
     // 1. Obtener la lista inicial de productos disponibles
     try {
-      const query = `SELECT idProducto, nombre, descripcion, precio, cantidadDisponible, disponible, idUsuario,foto FROM productos WHERE disponible = 1`;
+      const query = `SELECT idProducto, nombre, descripcion, precio, cantidadDisponible, disponible, idVendedor,foto FROM productos `;
       const [rows] = await this.db.query(query);
 
       console.log('Enviando productos iniciales al cliente...');
